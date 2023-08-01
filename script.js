@@ -9,8 +9,8 @@ let snake = {
     directionX: 0,
     directionY: 0,
     segments: [
-        new Segment(10, 10),
-        new Segment(10, 17)
+        new Segment(7, 7),
+        new Segment(7, 14)
     ]
 }
 
@@ -20,6 +20,11 @@ let food = new Segment(0, 0);
 // Контейнер з грою
 const game = document.querySelector('#game-container');
 const context = game.getContext('2d');
+
+// Перевірка чи треба змінювати напрямок змії при кожному натисканні клавіші
+document.addEventListener('keydown', (event) => {
+    changeSnakeDirection(event.code);
+});
 
 // Об'єкт конфігурації гри
 const config = {
@@ -53,8 +58,12 @@ const config = {
     secondaryColor: 'rgb(256, 256, 256)',
 
     // Бінди
-    movement: { UP: 87, DOWN: 83, LEFT: 65, RIGHT: 68 }
+    movement: { UP: 'KeyW', DOWN: 'KeyS', LEFT: 'KeyA', RIGHT: 'KeyD' },
+    pause: 'Space'
 }
+
+// Зменшення швидкості руху по вертикалі для урівняння швидкостей
+const verticalSpeedCoef = 2;
 
 startGame();
 
@@ -69,10 +78,16 @@ function startGame () {
 }
 //
 function executeFrame() {
-    if (config.gameRunning){
-        moveSnake();
-        // перевірка на перетин з полем 
-        drawSnake();
+    if (config.gameRunning) {
+        setTimeout(() => {
+            clearField();
+            drawFood();
+            moveSnake();
+            // перевірка на перетин з полем 
+            drawSnake();
+            executeFrame();
+        }, 75);
+
     }
 }
 // Виконання руху змійки
@@ -84,6 +99,7 @@ function moveSnake () {
     );
     snake.segments.unshift(headMove);
     // Якщо відбувся перетин з фруктом
+    //console.log(snake.segments[0].x + ' ' + food.x + ' '  + snake.segments[0].y + ' ' + food.y)
     if (snake.segments[0].x == food.x && snake.segments[0].y == food.y){
         // Додаю нагороду за фрукт та створюю новий
         config.playerScore += config.scoreCost;
@@ -99,22 +115,33 @@ function changeSnakeDirection (keyPressed) {
     switch(keyPressed) {
         // Ліворуч
         case config.movement.LEFT:
-            snake.directionX = -config.cellSize;
+            snake.directionX = snake.directionX > 0 ? config.cellSize : -config.cellSize;
             snake.directionY = 0;
             break;
         // Праворуч
         case config.movement.RIGHT:
-            snake.directionX = config.cellSize;
+            snake.directionX = snake.directionX < 0 ? -config.cellSize : config.cellSize;
+            snake.directionY = 0;
             break;
         // Вверх
         case config.movement.UP:
             snake.directionX = 0;
-            snake.directionY = -config.cellSize;
+            snake.directionY = snake.directionY > 0 ? config.cellSize : -config.cellSize;
             break;
         // Вниз
         case config.movement.DOWN:
             snake.directionX = 0;
-            snake.directionY = config.cellSize;
+            snake.directionY = snake.directionY < 0 ? -config.cellSize : config.cellSize;
+            break;
+        // Пауза
+        case config.pause:
+            if (config.gameRunning){
+                config.gameRunning = !config.gameRunning;
+            }
+            else{
+                config.gameRunning = !config.gameRunning;
+                executeFrame();
+            }
             break; 
 
     }
@@ -122,23 +149,27 @@ function changeSnakeDirection (keyPressed) {
 // Функція створення їжі 
 function spawnFood () {
     // Додаткова функція для задання позиції їжі відповідно до розміру поля
-    function createRandomFood(minc, maxc){
-        return Math.round((Math.random() * (maxc - minc)) / config.cellSize);
+    /*function createRandomFood(boardSize){
+        let res = Math.floor(Math.random() * boardSize / 10) * config.cellSize;
+        console.log(res);
+        return res;
     }
     // Задаю нові координати для їжі
-    food.x = createRandomFood(0, config.width - config.cellSize);
-    food.y = createRandomFood(0, config.width - config.cellSize);
+    food.x = createRandomFood(config.width - config.cellSize);
+    food.y = createRandomFood(config.height - config.cellSize);*/
 }
 // Малювання їжі
 function drawFood () {
-    context.fillStyle = config.secondaryColor;
-    context.fillRect(food.x, food.y, config.cellSize, config.cellSize);
+    context.strokeStyle = config.secondaryColor;
+    context.strokeRect(food.x, food.y, config.cellSize, config.cellSize - verticalSpeedCoef);
 }
 // Малювання змійки по кожному сегменту
 function drawSnake () {
-    context.strokeStyle = config.secondaryColor;
+    context.fillStyle = config.secondaryColor;
+    context.strokeStyle = config.mainColor;
     //Цикл малювання кожного сегмента змійки
     snake.segments.forEach(segment => {
+        context.fillRect(segment.x, segment.y, config.cellSize, config.cellSize);
         context.strokeRect(segment.x, segment.y, config.cellSize, config.cellSize);
     });
 }
