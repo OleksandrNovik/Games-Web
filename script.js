@@ -1,3 +1,10 @@
+// Реальний розмір координтної площини ігрового поля
+const COORDINATES_MAX_X = 289;
+const COORDINATES_MAX_Y = 141;
+
+// Зменшення швидкості руху по вертикалі для урівняння швидкостей
+const verticalSpeedCoef = 2;
+
 // Представлення сегменту змійки 
 function Segment(x, y){
     this.x = x;
@@ -49,6 +56,7 @@ const config = {
     // Ігрові характеристики та рахунок
     //gameSpeed: 200,
     gameRunning: false,
+    gameStarted: false,
     playerScore: 0,
     scoreCost: 10,
     cellSize: 7,
@@ -59,35 +67,41 @@ const config = {
 
     // Бінди
     movement: { UP: 'KeyW', DOWN: 'KeyS', LEFT: 'KeyA', RIGHT: 'KeyD' },
-    pause: 'Space'
+    pause: 'Space',
+    // Зміна конфігурованої кнопки для паузи гри 
+    changePauseButton: function (keyPressed){
+        this.pause = keyPressed;
+    }
 }
-
-// Зменшення швидкості руху по вертикалі для урівняння швидкостей
-const verticalSpeedCoef = 2;
 
 startGame();
 
 // Задання стартових параметрів гри
 function startGame () {
     config.gameRunning = true;
+    config.gameStarted = true;
     config.playerScore = 0;
     snake.directionX = config.cellSize;
     spawnFood();
     drawFood();
     executeFrame();
 }
-//
+// Виконання усіх дій, необхідних для показу та роботи одного кадру гри
 function executeFrame() {
     if (config.gameRunning) {
         setTimeout(() => {
             clearField();
             drawFood();
             moveSnake();
-            // перевірка на перетин з полем 
+            if (checkGameOver()){
+                clearField();
+                config.gameRunning = false;
+                config.gameStarted = false;
+                return;
+            } 
             drawSnake();
             executeFrame();
         }, 75);
-
     }
 }
 // Виконання руху змійки
@@ -99,7 +113,6 @@ function moveSnake () {
     );
     snake.segments.unshift(headMove);
     // Якщо відбувся перетин з фруктом
-    //console.log(snake.segments[0].x + ' ' + food.x + ' '  + snake.segments[0].y + ' ' + food.y)
     if (snake.segments[0].x == food.x && snake.segments[0].y == food.y){
         // Додаю нагороду за фрукт та створюю новий
         config.playerScore += config.scoreCost;
@@ -112,52 +125,71 @@ function moveSnake () {
 }
 // Управління змійкою залежно від натиснутої кнопки
 function changeSnakeDirection (keyPressed) {
-    switch(keyPressed) {
-        // Ліворуч
-        case config.movement.LEFT:
-            snake.directionX = snake.directionX > 0 ? config.cellSize : -config.cellSize;
-            snake.directionY = 0;
-            break;
-        // Праворуч
-        case config.movement.RIGHT:
-            snake.directionX = snake.directionX < 0 ? -config.cellSize : config.cellSize;
-            snake.directionY = 0;
-            break;
-        // Вверх
-        case config.movement.UP:
-            snake.directionX = 0;
-            snake.directionY = snake.directionY > 0 ? config.cellSize : -config.cellSize;
-            break;
-        // Вниз
-        case config.movement.DOWN:
-            snake.directionX = 0;
-            snake.directionY = snake.directionY < 0 ? -config.cellSize : config.cellSize;
-            break;
-        // Пауза
-        case config.pause:
-            if (config.gameRunning){
-                config.gameRunning = !config.gameRunning;
-            }
-            else{
-                config.gameRunning = !config.gameRunning;
-                executeFrame();
-            }
-            break; 
-
+    if (config.gameStarted){
+        switch(keyPressed) {
+            // Ліворуч
+            case config.movement.LEFT:
+                snake.directionX = snake.directionX > 0 ? config.cellSize : -config.cellSize;
+                snake.directionY = 0;
+                break;
+            // Праворуч
+            case config.movement.RIGHT:
+                snake.directionX = snake.directionX < 0 ? -config.cellSize : config.cellSize;
+                snake.directionY = 0;
+                break;
+            // Вверх
+            case config.movement.UP:
+                snake.directionX = 0;
+                snake.directionY = snake.directionY > 0 ? config.cellSize : -config.cellSize;
+                break;
+            // Вниз
+            case config.movement.DOWN:
+                snake.directionX = 0;
+                snake.directionY = snake.directionY < 0 ? -config.cellSize : config.cellSize;
+                break;
+            // Пауза
+            case config.pause:
+                if (config.gameRunning){
+                    config.gameRunning = !config.gameRunning;
+                }
+                else{
+                    config.gameRunning = !config.gameRunning;
+                    executeFrame();
+                }
+                break; 
+        }
     }
 }
 // Функція створення їжі 
 function spawnFood () {
     // Додаткова функція для задання позиції їжі відповідно до розміру поля
-    /*function createRandomFood(boardSize){
-        let res = Math.floor(Math.random() * boardSize / 10) * config.cellSize;
-        console.log(res);
-        return res;
+    function createRandomFood(boardSize){
+        return Math.floor(Math.random() * boardSize / 10) * config.cellSize;
     }
-    // Задаю нові координати для їжі
-    food.x = createRandomFood(config.width - config.cellSize);
-    food.y = createRandomFood(config.height - config.cellSize);*/
+    do {
+        // Задаю нові координати для їжі
+        food.x = createRandomFood(config.width - config.cellSize);
+        food.y = createRandomFood(config.height - config.cellSize);
+        //TODO: Виправити це 
+    } while(food.x > COORDINATES_MAX_X || food.y > COORDINATES_MAX_Y);
+
 }
+
+// Перевірка на те чи виконується умова завершення гри
+function checkGameOver () {
+    // Перетин початку ігрової площі
+    let startOfField = snake.segments[0].x < 0 || snake.segments[0].y < 0;
+    // Перетин кінця ігрової площі 
+    let endOfField = snake.segments[0].x >= COORDINATES_MAX_X || snake.segments[0].y >= COORDINATES_MAX_Y;
+    // Якщо змія не перетинає себе, то переходим до перевірки виходу за межі поля
+    for (let i = 1; i < snake.segments.length; i++){
+        // Якщо голова перетинає хоча б 1 сегмент із хвоста
+        if (snake.segments[i].x == snake.segments[0].x && snake.segments[i].y == snake.segments[0].y)
+            return true;
+    }
+    return startOfField || endOfField;
+}
+
 // Малювання їжі
 function drawFood () {
     context.strokeStyle = config.secondaryColor;
