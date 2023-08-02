@@ -4,15 +4,28 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="style.css" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Lobster&family=Open+Sans&family=Orbitron:wght@500&family=Press+Start+2P&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
     <title>Snake Game</title>
 </head>
 <body>
     <div class="game-area-container">
         <div class="score">
-        
         </div>
-        <canvas id="game-container" style="height: 500px; width: 500px;">
-            
+        <div id="start-game-text" class="ingame-text">
+            <div class="ingame-main-text">
+                Snake Game
+            </div>
+            <div class="ingame-secondary-text">press <button class="space-button">Space</button> to start</div>
+        </div>
+        <div id="game-over-text" class="ingame-text">
+            <div class="ingame-main-text">
+                Game Over!
+            </div>
+            <div class="ingame-secondary-text">press <button class="space-button">Space</button> to try again</div>
+        </div>
+        <canvas id="game-container" style="height: 500px; width: 500px;">         
         </canvas>
     </div>
     <script src="script.js"></script>

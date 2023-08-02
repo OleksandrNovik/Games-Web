@@ -16,6 +16,50 @@ body{
 #game-container{
     border: solid 2px white;
     image-rendering: pixelated;
-
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
+.ingame-text{
+    color: white;
+    position: absolute;
+    left: 38%;
+}
+.ingame-main-text{
+    font-size: 40px;
+    font-family: 'Press Start 2P';
+}
+.ingame-secondary-text{
+    margin-top: 18px;
+    text-align: center;
+    font-family: 'Press Start 2P';
+    font-size: 12px;
+}
+.button-display, .space-button{
+    border: 2px solid white;
+    transition: transform 0.15s linear;
+}
+.button-display:hover{
+    animation: buttonAnimation 0.25s linear  forwards;    
+}
+.space-button{
+    font-family: 'Press Start 2P';
+    color: white;
+    padding: 5px 25px;
+    background-color: rgba(0, 0, 0, 0);
+    animation: buttonAnimation 0.35s linear infinite forwards; 
+    box-shadow: 4px 7px 2px rgba(200, 200, 200, 0.5);
+}
+#game-over-text, #start-game-text{
+    transition: all 0.15s;
+    z-index: 10;
+}
+#game-over-text {
+    opacity: 0;
+}
+@keyframes buttonAnimation {
+    50%{
+        transform: translateY(2px);
+    }
+}
