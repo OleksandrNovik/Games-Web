@@ -11,22 +11,104 @@
 </head>
 <body>
     <div class="game-area-container">
-        <div class="score">
-        </div>
-        <div id="start-game-text" class="ingame-text">
+        <div id="start-game-text" class="ingame-text secondaty-color-items">
             <div class="ingame-main-text">
                 Snake Game
             </div>
-            <div class="ingame-secondary-text">press <button class="space-button">Space</button> to start</div>
+            <div class="ingame-secondary-text ">press <button class="space-button secondaty-color-items">Space</button> to start</div>
         </div>
-        <div id="game-over-text" class="ingame-text">
+        <div id="game-over-text" class="ingame-text secondaty-color-items">
             <div class="ingame-main-text">
                 Game Over!
             </div>
-            <div class="ingame-secondary-text">press <button class="space-button">Space</button> to try again</div>
+            <div class="ingame-secondary-text">press <button class="space-button secondaty-color-items">Space</button> to try again</div>
         </div>
-        <canvas id="game-container" style="height: 500px; width: 500px;">         
+
+        <div class="options-ares">
+            <div>
+                <div class="secondary-text options-lable secondaty-color-items">Controls:</div>
+                <div class="controls-btn">
+                    <div class="dp-flex">
+                        <div class="movement-keys">
+                            <input id="Up" class="button-display js-controls-btns secondaty-color-items">
+                            <div class="bottom-movemnet-keys">
+                                <input id="Left" class="button-display js-controls-btns secondaty-color-items">
+                                <input id="Down" class="button-display js-controls-btns secondaty-color-items">
+                                <input id="Right" class="button-display js-controls-btns secondaty-color-items">
+                            </div>
+                        </div> 
+                        <div class="pause-key">
+                            <input id="Pause" class="button-display js-controls-btns secondaty-color-items">
+                        </div>
+                    </div>
+
+                </div>
+                <div class="options-text">
+                    <div class="secondary-text font-sz secondaty-color-items">Movement</div>
+                    <div class="secondary-text font-sz secondaty-color-items">Pause</div>
+                </div>
+            </div>
+
+            <div>
+                <div class="secondary-text options-lable secondaty-color-items">Resolution:</div>
+                <div class="button-holder">
+                    <button id="500" class="button-display js-resolution-btns translate-down secondaty-color-items">500x500</button>
+                    <button id="600" class="button-display js-resolution-btns secondaty-color-items">600x600</button>
+                    <button id="700" class="button-display js-resolution-btns secondaty-color-items">700x700</button>
+                </div>
+            </div>   
+
+            <div>
+                <div class="secondary-text options-lable secondaty-color-items">Game Speed:</div>
+                <div class="button-holder">
+                    <button class="button-display js-speed-btns secondaty-color-items" id="1">1</button>
+                    <button class="button-display js-speed-btns secondaty-color-items" id="2">2</button>
+                    <button class="button-display js-speed-btns translate-down secondaty-color-items" id="3">3</button>
+                    <button class="button-display js-speed-btns secondaty-color-items" id="4">4</button>
+                    <button class="button-display js-speed-btns secondaty-color-items" id="5">Madness</button>
+                </div> 
+            </div>
+
+            <div>
+                <div class="secondary-text options-lable secondaty-color-items">Colors:</div>
+                <div>
+                    <input class="js-color-inputs" id="main-color" type="color" value="#000c21">
+                    <input class="js-color-inputs" id="secondary-color" type="color" value="#ffffff">
+                    <button id="apply-changes-on-colors" class="button-display secondaty-color-items">Apply</button>
+                    <button id="default-colors" class="button-display secondaty-color-items">Default</button>
+                </div>
+            </div>
+        </div>
+
+        <canvas id="game-container" style="height: 500px; width: 500px;" class="secondaty-color-items">         
         </canvas>
+        
+        <div class="score-options-container">
+            <div class="score-information">
+                <div id="current-score" class="secondary-text secondaty-color-items">
+                </div>
+                <div id="best-score" class="secondary-text secondaty-color-items">
+                </div>
+            </div>
+            <div class="change-score">
+                <div class="secondary-text secondaty-color-items">
+                    Change score reward for food: 
+                </div>
+                <div class="score-reward-choice">
+                    <button class="button-display js-score-btn secondaty-color-items">1</button>
+                    <button class="button-display js-score-btn secondaty-color-items">2</button>
+                    <button class="button-display js-score-btn secondaty-color-items">3</button>
+                    <button class="button-display js-score-btn secondaty-color-items">4</button>
+                    <button class="button-display js-score-btn secondaty-color-items">5</button>
+                    <button class="button-display js-score-btn secondaty-color-items">6</button>
+                    <button class="button-display js-score-btn secondaty-color-items">7</button>
+                    <button class="button-display js-score-btn secondaty-color-items">8</button>
+                    <button class="button-display js-score-btn secondaty-color-items">9</button>
+                    <button class="button-display js-score-btn translate-down secondaty-color-items">10</button>
+                </div>
+            </div>            
+        </div>
+
     </div>
     <script src="script.js"></script>
 </body>
